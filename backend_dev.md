@@ -276,10 +276,49 @@ $ create user <username> with password '<password>';
 
 grant all priviledge on a db to a user
 $ grant all privileges on database <db_name> to <user_name>;
+$ GRANT ALL PRIVILEGES ON SCHEMA public TO bilal; //make sure you login as supaadmin to only that db
 
 change owner of database
 $ alter database <db_name> owner to <owner>
 
 login as a different user
 $ psql -U <user_name> -d <db_name> -h localhost (Take not of the -U capitalization)
+
+list all tables
+$ \dt (or \dt public.*, (public is the schema))
+
+change default schema
+$ SET search_path TO hr;
+
+descibe a table
+$ \d table_name
+
+descibe a table with extra information
+$ \d+ table_name
+
+
+
+
+
+
+
+
+
+
+
+-----------------
+Misc
+-----------------
+Prettier
+
+1. in vscode install extension (Prettier-code formatter)
+2. in .vscode/settings.json
+    {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+    }
+3. npm install --save-dev prettier
 
