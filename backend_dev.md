@@ -3,8 +3,14 @@ PRACTICE QUESTIONS
 1. create a nestjs scaffold app.
 2. using supabase read all tables where user_ids is null or user_ids contains H.
 3. install supabase and typescript.
-
-
+4. how to connect to postgresql as root.
+5. create a new db postgresql.
+6. create a new user in postgresql.
+7. grant all priviledge and change ownership of table to a user in postgresql.
+8. view all databases in postgresql.
+9. delete a database in postgresql.
+10. login as new user in postgresql.
+11. create a table in postgresql.
 
 
 npm install -g @nestjs/cli
@@ -193,14 +199,87 @@ Many-to-many	Every row in the primary table has many related rows in the foreign
 and every record in the foreign table has many related rows in the primary table. 
 Use the @ManyToMany() decorator to define this type of relation.
 
+example:
+
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Photo } from '../photos/photo.entity';
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  firstName: string;
+
+  @Column()
+  lastName: string;
+
+  @Column({ default: true })
+  isActive: boolean;
+
+  @OneToMany(type => Photo, photo => photo.user)
+  photos: Photo[];
+}
+
+#TypeORM Transactions
+
+@Injectable()
+export class UsersService {
+  constructor(private dataSource: DataSource) {}
+}
+
+
+async createMany(users: User[]) {
+  const queryRunner = this.dataSource.createQueryRunner();
+
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+  try {
+    await queryRunner.manager.save(users[0]);
+    await queryRunner.manager.save(users[1]);
+
+    await queryRunner.commitTransaction();
+  } catch (err) {
+    // since we have errors lets rollback the changes we made
+    await queryRunner.rollbackTransaction();
+  } finally {
+    // you need to release a queryRunner which was manually instantiated
+    await queryRunner.release();
+  }
+}
+
+or
+
+
+async createMany(users: User[]) {
+  await this.dataSource.transaction(async manager => {
+    await manager.save(users[0]);
+    await manager.save(users[1]);
+  });
+}
+
+
 --------------------
 CHATPER 3
 POSTGRESQL
 --------------------
 
+create a db
+$ create database <db_name>;
 
+create a db with owner
+$ create database <db_name> owner <username>;
 
+create a new user
+$ create user <username> with password '<password>';
 
+grant all priviledge on a db to a user
+$ grant all privileges on database <db_name> to <user_name>;
 
+change owner of database
+$ alter database <db_name> owner to <owner>
 
+login as a different user
+$ psql -U <user_name> -d <db_name> -h localhost (Take not of the -U capitalization)
 

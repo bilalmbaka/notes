@@ -1,3 +1,9 @@
+Practise questions
+
+1. how do you access string resources.
+2. create a login screen.
+
+
 -----------------
 Section 1
 Kotlin
