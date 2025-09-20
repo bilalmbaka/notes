@@ -259,6 +259,332 @@ async createMany(users: User[]) {
   });
 }
 
+#or
+const user = await this.userRepository
+  .createQueryBuilder('user')
+  .where('(user.username = :username AND user.password = :password)', {
+    username: loginDto.identifier,
+    password: loginDto.password,
+  })
+  .orWhere('(user.email = :email AND user.password = :password)', {
+    email: loginDto.identifier,
+    password: loginDto.password,
+  })
+  .getOne();
+
+
+const user = await this.userRepository.findOne({
+  where: [
+    { username: loginDto.identifier, password: loginDto.password },
+    { email: loginDto.identifier, password: loginDto.password },
+  ],
+});
+
+#search
+```
+            if (dto.id) {
+                where.push({ id: ILike(`%${dto.id}%`) });
+            }
+
+            if (dto.userName) {
+                where.push({ userName: ILike(`%${dto.userName}%`) });
+            }
+
+            if (dto.email) {
+                where.push({ email: ILike(`%${dto.email}%`) });
+            }
+
+            const users = await this.userRepository.find({
+                where: where.length > 0 ? where : {},
+                skip: Number(dto.startAt ?? '0'),
+                take: Number(dto.endAt ?? '20'),
+                order: {
+                    email: 'ASC',
+                    userName: 'ASC',
+                },
+            });
+
+```
+
+or 
+
+using query builder
+
+```
+const startAt = Number(dto.startAt ?? 0);
+const endAt = Number(dto.endAt ?? 20);
+
+const qb = this.userRepository.createQueryBuilder('user');
+
+// only add filters if values exist
+if (dto.id) {
+  qb.orWhere('user.id ILIKE :id', { id: `%${dto.id}%` });
+}
+
+if (dto.userName) {
+  qb.orWhere('user.userName ILIKE :userName', { userName: `%${dto.userName}%` });
+}
+
+if (dto.email) {
+  qb.orWhere('user.email ILIKE :email', { email: `%${dto.email}%` });
+}
+
+// ordering
+qb.orderBy('user.email', 'ASC')
+  .addOrderBy('user.userName', 'ASC');
+
+// pagination
+qb.skip(startAt).take(endAt - startAt);
+
+const users = await qb.getMany();
+```
+
+
+```
+            const qb = this.locationRepository
+                .createQueryBuilder('location')
+                .leftJoinAndSelect('location.pictures', 'pictures')
+                .leftJoinAndSelect('location.videos', 'videos')
+                .leftJoinAndSelect('location.category', 'category')
+                .leftJoinAndSelect('location.createdBy', 'createdBy')
+                .leftJoinAndSelect('location.updatedBy', 'updatedBy')
+                .leftJoinAndSelect('location.requestedBy', 'requestedBy')
+                .leftJoinAndSelect('location.approvedBy', 'approvedBy')
+                .leftJoinAndSelect('location.deletedBy', 'deletedBy')
+                .leftJoinAndSelect('location.reviews', 'reviews')
+                .skip(Number(filter.startAt ?? '0'))
+                .take(Number(filter.endAt ?? '20'))
+                .orderBy('location.createdAt', 'ASC');
+
+            if (user.role != UserRole.user) {
+                qb.withDeleted();
+            }
+
+            if (user.role === UserRole.user) {
+                filter.approvalStatus = undefined;
+                filter.requester = undefined;
+                filter.approver = undefined;
+                filter.deleter = undefined;
+                qb.andWhere('location.approved = :approved', { approved: true });
+            }
+
+            if (user.role == UserRole.moderator) {
+                filter.approver = undefined;
+                filter.deleter = undefined;
+            }
+
+            if (filter.name) {
+                qb.andWhere('location.name ILIKE :name', { name: `%${filter.name}%` });
+            }
+
+            if (filter.address) {
+                qb.andWhere('location.address ILIKE :address', { address: `%${filter.address}%` });
+            }
+
+            if (filter.category) {
+                qb.andWhere('category.id = :catId', { catId: filter.category });
+            }
+
+            if (filter.approvalStatus !== undefined) {
+                qb.andWhere('location.approved = :approvalStatus', {
+                    approvalStatus: filter.approvalStatus,
+                });
+            }
+
+            if (filter.requester) {
+                qb.andWhere('requestedBy.id = :requesterId', { requesterId: filter.requester });
+            }
+
+            if (filter.approver) {
+                qb.andWhere('approvedBy.id = :approverId', { approverId: filter.approver });
+            }
+
+            if (filter.deleter) {
+                qb.andWhere('deletedBy.id = :deleterId', { deleterId: filter.deleter });
+            }
+
+            //
+            // ✅ Distance filter (using geography point with SRID 4326)
+            //
+            if (filter.sourceLocation && filter.distanceFromSource) {
+                const { lat, lng } = JSON.parse(filter.sourceLocation as string); // assume object { lng, lat }
+
+                qb.andWhere(
+                    `ST_DWithin(
+        geography(location.point),
+     geography(ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)),
+       :radius
+     )`,
+                    { lng, lat, radius: filter.distanceFromSource },
+                );
+
+                qb.addSelect(
+                    `ST_Distance(
+     geography(location.point),
+     geography(ST_SetSRID(ST_MakePoint(:lng, :lat), 4326))
+   )`,
+                    'distance',
+                );
+
+                // Order by distance (closest → furthest)
+                qb.orderBy('distance', 'ASC');
+            }
+
+            const { entities, raw } = await qb.getRawAndEntities();
+```
+
+
+
+
+##2.3 Guards
+
+```
+@Injectable()
+export class AuthenticatedUserGuard implements CanActivate {
+    constructor(
+        @InjectRepository(AccessTokenEntity)
+        private accessTokenRepository: Repository<AccessTokenEntity>,
+
+        private authTokenService: AuthTokenService,
+    ) {}
+
+    async canActivate(context: ExecutionContext): Promise<boolean> {
+        try {
+            const request = context.switchToHttp().getRequest();
+            const authHeader = request.headers.authorization;
+
+            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                throw new UnauthorizedException('Missing or invalid authorization header');
+            }
+
+            const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+            const decoded = this.authTokenService.decode(token);
+
+            if (this.authTokenService.hasExpired(token)) {
+                throw new ForbiddenException();
+            }
+
+            //Fetch the user information.
+
+            const authenticatedUser = await this.accessTokenRepository.findOne({
+                relations: {
+                    user: true,
+                },
+                where: {
+                    accessToken: token,
+                },
+                order: {},
+            });
+
+            if (!authenticatedUser || authenticatedUser.user.emailVerified == false) {
+                throw new ForbiddenException();
+            }
+
+            if (authenticatedUser.user.disabled) {
+                throw new ForbiddenException(
+                    'Your account has been disabled' +
+                        (authenticatedUser.user.disabledReason
+                            ? ` because of ${authenticatedUser.user.disabledReason}`
+                            : ''),
+                );
+            }
+
+            request.user = authenticatedUser.user;
+
+            return true;
+        } catch (e) {
+            console.log('Error in auth guard', e);
+
+            if (e instanceof TokenExpiredError) {
+                throw new ForbiddenException();
+            }
+
+            throw e;
+        }
+    }
+}
+```
+
+###This example shows how to handle file uploads.
+
+    @Post('request-location')
+    @HttpCode(HttpStatus.CREATED)
+    @UseInterceptors(
+        FileFieldsInterceptor(
+            [
+                {
+                    name: 'pictures',
+                    maxCount: 5,
+                },
+                {
+                    name: 'videos',
+                    maxCount: 5,
+                },
+            ],
+
+            {
+                storage: diskStorage({
+                    destination: './uploads/',
+                    filename: (req, file, cb) => {
+                        // keep original name
+                        cb(null, file.originalname);
+                    },
+                }),
+                limits: { fileSize: 10 * 1024 * 1024 }, // applies per file
+                dest: './uploads/',
+                fileFilter: (req, file, cb) => {
+                    if (file.mimetype.startsWith('image/') && file.fieldname === 'pictures') {
+                        if (file.size > 5 * 1024 * 1024) {
+                            return cb(new BadRequestException('image file too large'), false);
+                        }
+
+                        cb(null, true);
+                    } else if (file.mimetype.startsWith('video/') && file.fieldname === 'videos') {
+                        cb(null, true);
+                    } else {
+                        cb(
+                            new BadRequestException(
+                                `Only valid ${file.fieldname} files are allowed`,
+                            ),
+                            false,
+                        );
+                    }
+                },
+            },
+        ),
+    )
+
+    //Documentation
+    @ApiConsumes('multipart/form-data')
+    @ApiOperation({})
+    @ApiExtraModels(LocationModel)
+    @ApiBody({
+        type: CreateLocationDTO,
+    })
+    @ApiResponse({
+        schema: {
+            type: 'object',
+            properties: new Status().toDoc(Helpers.swaggerDocPath('LocationModel')),
+        },
+    })
+    createLocation(
+        @AuthUser() user: UserEntity,
+        @Body() body: CreateLocationDTO,
+        @UploadedFiles()
+        files: {
+            pictures?: any;
+            videos?: any;
+        },
+    ): Promise<ResponseDto<LocationModel>> {
+        return this.locationsService.requestLocation(user, body, files.pictures, files.videos);
+    }
+
+
+
+
+
+
 
 --------------------
 CHATPER 3
@@ -300,10 +626,104 @@ $ \d+ table_name
 
 
 
+#relations
+One-to-One
+
+Means:
+One user can only ever be referred by exactly one other user, and that referrer can only ever refer exactly one user.
+
+This would enforce a strict one-to-one pairing (like a user and their passport).
+
+Many-to-One
+Means:
+Many users can share the same referrer, but each user still has at most one referrer.
+
+This fits referral programs:
+
+Bob → referred by Alice
+
+Charlie → referred by Alice
+
+Alice herself might also be referred by Dave.
+
+➡️ Example:
+One user can invite many others, but each invited user only points back to one referrer.
+This is exactly the referrals[] ↔ referredBy pattern.
 
 
+One-to-Many
+It means: “One user (the referrer) can have many referrals (other users).”
 
+This side does not create any column in the table; it just tells TypeORM how to navigate the relation in code.
 
+example:
+
+```sql
+CREATE TABLE IF NOT EXISTS public.users
+(
+    id uuid NOT NULL DEFAULT uuid_generate_v4(),
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now(),
+    deleted_at timestamp with time zone,
+    email character varying COLLATE pg_catalog."default" NOT NULL,
+    user_name character varying COLLATE pg_catalog."default",
+    password character varying COLLATE pg_catalog."default" NOT NULL,
+    access_tokens text COLLATE pg_catalog."default" NOT NULL DEFAULT '[]'::text,
+    refresh_tokens text COLLATE pg_catalog."default" NOT NULL DEFAULT '[]'::text,
+    email_verified boolean NOT NULL DEFAULT false,
+    disabled boolean NOT NULL DEFAULT false,
+    disabled_reason character varying COLLATE pg_catalog."default",
+    otp character varying COLLATE pg_catalog."default",
+    otp_sent_at timestamp with time zone,
+    last_seen timestamp with time zone,
+    referrer_id character varying COLLATE pg_catalog."default" NOT NULL,
+    referred_by_id uuid,
+    CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY (id),
+    CONSTRAINT "UQ_074a1f262efaca6aba16f7ed920" UNIQUE (user_name),
+    CONSTRAINT "UQ_97672ac88f789774dd47f7c8be3" UNIQUE (email),
+    CONSTRAINT "FK_a78a00605c95ca6737389f6360b" FOREIGN KEY (referred_by_id)
+        REFERENCES public.users (id) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE SET NULL
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.users
+    OWNER to bilal;
+```
+
+adding a contraint
+```
+    CONSTRAINT no_self_referral CHECK (id IS DISTINCT FROM referred_by_id)
+```
+
+```
+ALTER TABLE public.users
+ADD CONSTRAINT no_self_referral
+CHECK (id IS DISTINCT FROM referred_by_id);
+```
+
+#A simple update
+```
+update public.users set email='jhondoe@gmail.com' where id='12';
+
+```
+
+##view all enums
+$\dT
+
+##view sepcific enum
+$\dT+ <enumname>
+
+##delete an enum
+$DROP TYPE users_role_enum;
+
+##geometry types.
+> sudo apt install postgis
+> sudo -u postgres psql
+$ CREATE EXTENSION IF NOT EXISTS postgis
+$ \dT
 
 
 -----------------
