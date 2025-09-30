@@ -583,6 +583,15 @@ export class AuthenticatedUserGuard implements CanActivate {
 
 
 
+###Socket.io
+
+$ npm i --save @nestjs/websockets @nestjs/platform-socket.io
+
+
+
+
+
+
 
 
 

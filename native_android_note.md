@@ -120,3 +120,41 @@ APP ARCHITECTURE
 ---------------------------
 
 
+
+
+
+
+###Chapter 3
+###Themeing
+
+##setting border radius of buttons globally.
+
+```kotlin
+private val AppShapes = Shapes(
+    small = RoundedCornerShape(8.dp),
+    medium = RoundedCornerShape(12.dp),
+    large = RoundedCornerShape(20.dp) // <-- Buttons use `large` by default
+)
+
+@Composable
+fun AdsAppTheme(content: @Composable () -> Unit) {
+    MaterialTheme(
+        colorScheme = LightColors, // your colors
+        typography = Typography,
+        shapes = AppShapes,        // ✅ apply shapes here
+        content = content
+    )
+}
+```
+
+small → used for small components like TextField
+
+medium → used for medium surfaces (Cards, etc.)
+
+large → used for large components like Button
+
+So if you want all your buttons to have, say, 
+12dp rounded corners, set large = RoundedCornerShape(12.dp) 
+in your theme.
+
+
