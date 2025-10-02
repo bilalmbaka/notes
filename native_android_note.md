@@ -117,7 +117,11 @@ C. AdsAppTheme is probably your custom Material 3 theme wrapper, giving colors, 
 # Chapter 2
 # Activity lifecycle
 
-![Image showing the activity life cycle](../native_android_images/the_activity_lifecycle.png)
+![Image showing the activity life cycle](/native_android_images/the_activity_lifecycle.png)
+
+***Note: The asterisk on the onRestart() method indicates that this method is not called every 
+time the state transitions between Created and Started. It is only called if onStop() was 
+called and the activity is subsequently restarted.***
 
 
 
