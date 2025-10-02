@@ -114,12 +114,10 @@ C. AdsAppTheme is probably your custom Material 3 theme wrapper, giving colors, 
 
 
 
----------------------------
-CHAPTER 2
-APP ARCHITECTURE
----------------------------
+# Chapter 2
+# Activity lifecycle
 
-
+![Image showing the activity life cycle](../native_android_images/the_activity_lifecycle.png)
 
 
 

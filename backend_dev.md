@@ -436,7 +436,7 @@ const users = await qb.getMany();
 
 
 
-##2.3 Guards
+###2.3 Guards
 
 ```
 @Injectable()
@@ -583,10 +583,88 @@ export class AuthenticatedUserGuard implements CanActivate {
 
 
 
+###2.4 Interceptors
+This run after guards, unlike middlewares which run before guards/interceptors.
+
+```
+@Injectable()
+export class LastSeenInterceptor implements NestInterceptor {
+    constructor(
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
+    ) {}
+
+    intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+        const request = context.switchToHttp().getRequest();
+
+        // 🔑 Do your logic here (e.g. update last_seen in DB)
+        // If request.user is set by AuthGuard, you can use it
+        if (request.user) {
+            this.userRepository.update(request.user.id, {
+                lastSeen: new Date(),
+            });
+        }
+
+        return next.handle().pipe(
+            tap(() => {
+                console.log('last seen logged at', new Date().toISOString());
+            }),
+        );
+    }
+}
+```
+
+```
+@Module({
+    imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+        }),
+        TypeOrmModule.forRoot({
+            type: 'postgres' as const,
+            port: Number(process.env.DB_PORT),
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            host: process.env.DB_HOST,
+            synchronize: true,
+            ssl: false,
+            namingStrategy: new SnakeNamingStrategy(),
+            entities: [UserEntity, AccessTokenEntity, AssetsEntity],
+        }),
+        TypeOrmModule.forFeature([UserEntity]),
+
+        AuthModule,
+        PriviledgeUserModule,
+        UsersModule,
+        AssetsModule,
+        ShareLocationModule,
+        ShareLocationWebsocketGatewayModule,
+    ],
+    controllers: [AppController],
+    providers: [
+        AppService,
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: LastSeenInterceptor, // 👈 global interceptor
+        },
+    ],
+})
+export class AppModule {}
+```
+
+
+
+
+
+
+
+
+
+
 ###Socket.io
 
 $ npm i --save @nestjs/websockets @nestjs/platform-socket.io
-
 
 
 
