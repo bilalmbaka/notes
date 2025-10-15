@@ -255,4 +255,115 @@ large → used for large components like Button
 
 So if you want all your buttons to have, say,
 12dp rounded corners, set large = RoundedCornerShape(12.dp)
-in your theme.
+in your theme.<br/><br/><br/><br/>
+
+---
+
+# Chapter 4
+
+# App architecture
+
+- [Android developers](https://developer.android.com/topic/architecture#recommended-app-arch)
+
+### Common architectural principles
+
+1. Separation of concerns
+2. Adaptive layouts
+3. Drive UI from data models
+4. Single source of truth
+5. Unidirectional Data Flow <br/><br/>
+
+![Image basic app architecture](/native_android_images/mad-arch-overview.png) <br/><br/>
+
+### General best practices
+
+1. Don't store data in app components.
+2. Reduce dependencies on Android classes.
+3. Define clear boundaries of responsibility between modules in your app.
+4. Expose as little as possible from each module.
+5. Focus on the unique core of your app so it stands out from other apps.
+6. Use canonical layouts and app design patterns.
+7. Consider how to make each part of your app testable in isolation.
+8. Types are responsible for their concurrency policy.
+9. Persist as much relevant and fresh data as possible.
+
+### Using viewmodels
+
+Viewmodels are automatically saved for configurations change.
+
+```kotlin
+class Name: ViewModel() {
+    private val _uiState = MutableStateFlow(GameUiState());
+    val uiState: StateFlow<GameUiState> = _uiState.asStateFlow();
+
+    /*Update the ui state*/
+    _uiState.update { currentState ->
+        currentState.copy(isGuessedWordWrong = true);
+    }
+
+    if (userGuess.equals(currentWord, ignoreCase = true)) {
+        val updatedScore = _uiState.value.score.plus(SCORE_INCREASE)
+        updateGameState(updatedScore);
+    }
+
+     //currentState.currentWordCount.inc()
+}
+```
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+# Miscellaneaous
+
+### \* Making Composable widget scrollable
+
+```Kotlin
+Column(
+        modifier = Modifier
+            .statusBarsPadding()
+            .verticalScroll(rememberScrollState()) //Here
+            .safeDrawingPadding()
+            .padding(mediumPadding),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    )
+```
+
+### \* input form fields
+
+## _Outlined_
+
+```Kotlin
+@Composable
+fun formField() {
+    OutlinedTextField(
+                value = userGuess,
+                singleLine = true,
+                shape = shapes.large,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = colorScheme.surface,
+                    unfocusedContainerColor = colorScheme.surface,
+                    disabledContainerColor = colorScheme.surface,
+                ),
+                onValueChange = onUserGuessChanged,
+                label = {
+                    if (isGuessWrong) {
+                        Text(stringResource(R.string.wrong_guess))
+                    } else {
+                        Text(stringResource(R.string.enter_your_word))
+                    }
+                },
+                isError = isGuessWrong,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { onKeyboardDone() }
+                )
+            )
+
+}
+```
