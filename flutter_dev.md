@@ -46,3 +46,21 @@ Beginning with Android 14 (API level 34), you must declare an appropriate servic
     </application>
 </manifest>
 ```
+
+# CHAPTER 2
+# FLAVORING
+
+## Ios
+
+If you want to create Flutter flavors for an iOS app, you'll need to do so in Xcode. Xcode does not have a concept called "flavor". Instead, you'll need to set up something called a scheme and attach custom configurations to it.
+
+``` bash
+open ios/Runner.xcworkspace
+```
+
+
+# CHAPTER 3
+# NOTIFICATIONS
+
+## Ios setup
+

@@ -126,7 +126,7 @@ called and the activity is subsequently restarted._**
 - Log.v _verbose_
 - Log.i _information_
 - Log.d _debug_
-- Log.w _warning_
+- Log _warning_
 - Log.e _errorMessage_
 
 ### onStart()
