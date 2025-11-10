@@ -168,3 +168,21 @@ Building with shorebird release will include Shorebird code push in your app. Bu
 
 You can remove shorebird from your path by removing it from your .bashrc or .zshrc and deleting the .shorebird directory located in ~/.shorebird.
 
+
+
+
+# CHAPTER 4
+# TESTING
+
+## Widget testing 
+
+### sources
+[Flutter doc widget test](https://docs.flutter.dev/cookbook/testing/widget/introduction)
+
+After the initial call to pumpWidget(), the WidgetTester provides additional ways to rebuild the same widget. This is useful if you're working with a StatefulWidget or animations.
+
+* tester.pump(Duration duration)
+* tester.pumpAndSettle()
+
+
+## Testing with when using riverpod
