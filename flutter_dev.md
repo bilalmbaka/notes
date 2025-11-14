@@ -186,3 +186,192 @@ After the initial call to pumpWidget(), the WidgetTester provides additional way
 
 
 ## Testing with when using riverpod
+
+
+
+
+
+# CHAPTER 5
+# CI/CD
+
+## Codemagic
+sources
+[Signing apps](https://docs.codemagic.io/yaml-code-signing/signing-android/)
+
+### Signing
+
+### Android apps
+
+``` bash
+> keytool -genkey -v -keystore codemagic.keystore -storetype JKS \
+        -keyalg RSA -keysize 2048 -validity 10000 -alias codemagic
+```
+
+
+**Uploading a keystore**
+
+* Open your Codemagic Team settings, and go to codemagic.yaml settings > Code signing identities.
+* Open Android keystores tab.
+* Upload the keystore file by clicking on Choose a file or by dragging it into the indicated frame.
+* Enter the Keystore password, Key alias and Key password values as indicated.
+* Enter the keystore Reference name. This is a unique name used to reference the file in codemagic.yaml
+* Click the Add keystore button to add the keystore.
+
+
+**Referencing keystores in codemagic.yaml**<br>
+
+__Fetching a single keystore file__
+
+```yaml
+workflows:
+
+  android-workflow:
+
+    name: Android Workflow
+
+    # ....
+
+    environment:
+
+      android_signing:
+
+        - keystore_reference
+```
+
+
+Default environment variables are assigned by Codemagic for the values on the build machine:
+
+* Keystore path: CM_KEYSTORE_PATH
+* Keystore password: CM_KEYSTORE_PASSWORD
+* Key alias: CM_KEY_ALIAS
+* Key alias password: CM_KEY_PASSWORD
+
+_Fetching multiple keystore files_
+
+```yaml
+environment:
+
+  android_signing:
+
+    - keystore: keystore_reference_1
+
+      keystore_environment_variable: THIS_KEYSTORE_PATH_ON_DISK_1
+
+      keystore_password_environment_variable: THIS_KEYSTORE_PASSWORD_1
+
+      key_alias_environment_variable: THIS_KEY_ALIAS_1
+
+      key_password_environment_variable: THIS_KEY_PASSWORD_1
+
+    - keystore: keystore_reference_2
+
+      keystore_environment_variable: THIS_KEYSTORE_PATH_ON_DISK_2
+
+      keystore_password_environment_variable: THIS_KEYSTORE_PASSWORD_2
+
+      key_alias_environment_variable: THIS_KEY_ALIAS_2
+
+      key_password_environment_variable: THIS_KEY_PASSWORD_2
+```
+
+**Signing Android apps using Gradle**
+
+These will use the default keys.
+
+```gradle
+...
+  android {
+
+      ...
+
+      defaultConfig { ... }
+
+      signingConfigs {
+
+          release {
+
+              if (System.getenv()["CI"]) { // CI=true is exported by Codemagic
+
+                  storeFile file(System.getenv()["CM_KEYSTORE_PATH"])
+
+                  storePassword System.getenv()["CM_KEYSTORE_PASSWORD"]
+
+                  keyAlias System.getenv()["CM_KEY_ALIAS"]
+
+                  keyPassword System.getenv()["CM_KEY_PASSWORD"]
+
+              } else {
+
+                  keyAlias keystoreProperties['keyAlias']
+
+                  keyPassword keystoreProperties['keyPassword']
+
+                  storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+
+                  storePassword keystoreProperties['storePassword']
+
+              }
+
+          }
+
+      }
+
+      buildTypes {
+
+          release {
+
+              ...
+
+              signingConfig signingConfigs.release
+
+          }
+
+      }
+
+  }
+  ...
+```
+
+to use userdefined keys, after modifiying the build.gradle add this scirpt
+to codemagic.yaml
+
+```yaml
+scripts:
+
+  
+
+  # ...
+
+
+
+  - name: Set up key.properties
+
+    script: | 
+
+      cat >> "$CM_BUILD_DIR/project_directory/android/key.properties" <<EOF
+
+      storePassword=$CM_KEYSTORE_PASSWORD
+
+      keyPassword=$CM_KEY_PASSWORD
+
+      keyAlias=$CM_KEY_ALIAS
+
+      storeFile=$CM_KEYSTORE_PATH
+
+      EOF    
+```
+
+
+### IOS APPS
+<br>
+<br>
+
+### PUBLISHING
+### ANDROID
+
+
+
+
+
+
+
