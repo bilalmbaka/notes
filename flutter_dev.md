@@ -349,6 +349,67 @@ scripts:
 
 <br><br>
 
+
+
+
+<br>
+<br>
+<br>
+
+## Using github actions and fastlane.
+
+__sources__
+
+[Fastlane on android](https://docs.fastlane.tools/getting-started/android/setup/)
+
+1. install fastlane
+```bash
+gem install bundler
+```
+
+Fix ruby version Error.
+```bash
+brew install rbenv ruby-build
+rbenv install 3.2.2
+rbenv global 3.2.2
+
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.zshrc
+echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
+
+source ~/.zshrc
+
+rbenv rehash
+
+rbenv global 3.2.2
+```
+
+Every time you run fastlane, use bundle exec fastlane [lane]
+On your CI, add bundle install as your first build step
+To update fastlane, just run bundle update fastlane
+
+__Navigate to your iOS or Android app and run__
+
+**fastlane init**
+
+fastlane will automatically detect your project, and ask for any missing information.
+
+### Android setup
+
+run fastlane init in android folder, it should generate two files
+AppFile and FastFile
+
+The most interesting file is fastlane/Fastfile, which contains all the information that is needed to distribute your app.
+
+
+
+i. Firebase app distribution
+
+```bash
+> openssl base64 -e -in upload-keystore.jks -out ~/Downloads/key.txt
+```
+
+
+
 # Chapter 6
 
 # PUBLISHING APPS
