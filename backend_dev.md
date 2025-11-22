@@ -506,7 +506,7 @@ export class AuthenticatedUserGuard implements CanActivate {
 }
 ```
 
-###This example shows how to handle file uploads.
+### This example shows how to handle file uploads.
 
     @Post('request-location')
     @HttpCode(HttpStatus.CREATED)
@@ -583,7 +583,7 @@ export class AuthenticatedUserGuard implements CanActivate {
 
 
 
-###2.4 Interceptors
+### 2.4 Interceptors
 This run after guards, unlike middlewares which run before guards/interceptors.
 
 ```

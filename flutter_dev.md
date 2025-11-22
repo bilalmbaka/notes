@@ -180,6 +180,88 @@ After the initial call to pumpWidget(), the WidgetTester provides additional way
 
 ## Testing with when using riverpod
 
+Firt you mock repo classes and service classes, then override the different
+riverpod classes.
+
+```dart
+class TestHelpers {
+  static Widget buildRoute({
+    required Route<dynamic>? Function(RouteSettings) routes,
+    List<Override> overrides = const [],
+  }) {
+    return ProviderScope(
+      overrides: overrides,
+      child: ScreenUtilInit(
+        designSize: const Size(430, 932),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        child: MaterialApp(
+          restorationScopeId: AppConstants.rootRestorationId,
+          title: AppStrings.appName,
+          navigatorKey: navigatorkey,
+          onGenerateRoute: routes,
+          navigatorObservers: [MyRouteObserver()],
+        ),
+      ),
+    );
+  }
+}
+```
+
+```dart
+    await tester.pumpWidget(
+      TestHelpers.buildRoute(
+        routes: LoginRoute.generateRoute,
+        overrides: [
+          loginViewModel.overrideWith(() {
+            return LoginViewModel(
+              authUseCase: AuthUsecase(
+                profileRepository: fakeProfileRepository,
+                authRepository: mockAuthRepository,
+              ),
+            );
+          }),
+          saveLoginViewModel.overrideWith(() {
+            return SavedLoginViewModel(
+              authUseCase: AuthUsecase(
+                profileRepository: fakeProfileRepository,
+                authRepository: mockAuthRepository,
+              ),
+            );
+          }),
+        ],
+      ),
+    );
+```
+
+### Scolling in widget tests
+
+```dart
+    //Scroll down.
+    await tester.dragUntilVisible(
+      find.text(AppStrings.dontHaveAnAccount),
+      find.byKey(
+        AppConstants.loginScreenKey,
+      ),
+      const Offset(0, 10),
+    );
+    await tester.pumpAndSettle();
+```
+
+
+## Integration testing
+
+It is pretty much the same as widget testing you just add 
+
+```dart
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+````
+
+to the start of main function.
+
+
+
+
 # CHAPTER 5
 
 # CI/CD
@@ -502,3 +584,5 @@ android {
 
 }
 ```
+
+### Appstore
