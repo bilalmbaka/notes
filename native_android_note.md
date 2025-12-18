@@ -367,3 +367,62 @@ fun formField() {
 
 }
 ```
+
+
+<br/>
+<br/>
+<br/>
+# CHAPTER 5
+# NAVIGATION
+
+__LocalContext.current__ , Context  is an abstract class whose implementation 
+is provided by the Android system. It allows access to application-specific 
+resources and classes, as well as up-calls for application-level operations 
+such as launching activities, etc. You can use this variable to get the 
+strings from the list of resource IDs in the view model to display the list 
+of flavors.
+
+To navigate to another route, simply call the navigate() method on your instance 
+of NavHostController.
+
+```kotlin
+navController.navigate(route)
+```
+
+__Pop to the start screen__
+
+```kotlin
+navController.popBackStack(route,inclusive)
+```
+
+The popBackStack() method has two required parameters.
+
+1. route: The string representing the route of the destination 
+    you want to navigate back to.
+2. inclusive: A Boolean value that, if true, also pops (removes) the specified route. 
+    If false, popBackStack() will remove all destinations on top of—but not 
+    including—the start destination, leaving it as the topmost screen visible to the user.
+    
+__Getting the current screen__
+
+```kotlin
+val backStackEntry by navController.currentBackStackEntryAsState()
+backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
+
+val currentScreen = CupcakeScreen.valueOf(
+    backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
+)
+```
+
+__checking if route can be popped__
+
+```kotlin
+canNavigateBack = navController.previousBackStackEntry != null,
+```
+
+__going back__
+
+```kotlin
+navigateUp = { navController.navigateUp() }
+```
+
