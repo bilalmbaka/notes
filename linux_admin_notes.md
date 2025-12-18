@@ -25,3 +25,8 @@ edit lynx="echo"
 *Files are stored in*
 __/opt/homebrew/var/www__
 
+# Macos
+## Clawing back space.
+
+1. flutter clean
+

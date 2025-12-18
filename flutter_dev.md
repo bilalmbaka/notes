@@ -585,4 +585,27 @@ android {
 }
 ```
 
-### Appstore
+## Appstore
+
+```bash
+flutter build ipa
+```
+
+### Upload the app bundle to App Store Connect
+
+__Method A__
+
+1. open build/ios/archive/MyApp.xcarchive in Xcode.
+2. Click the Validate App button. If any issues are reported, address them and produce another build. You can reuse the same build ID until you upload an archive.
+3. After the archive has been successfully validated, click Distribute App.
+
+*Xcode will create a directory containing an IPA of your app and an ExportOptions.plist file. You can create new IPAs with the same options without launching Xcode by running flutter build ipa --export-options-plist=path/to/ExportOptions.plist*
+
+
+
+
+
+
+# CHAPTER 7
+# MATRIX ANIMATIONS
+
