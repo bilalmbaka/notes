@@ -90,7 +90,38 @@ __*Keep in mind that this step is only necessary for HTTP/HTTPS links and not fo
     ["00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00"]
   }
 }]
+
+//example.
+
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.finance.walletwise.app",
+    "sha256_cert_fingerprints":
+    [
+      "3F:F8:47:EB:37:25:EA:10:B7:D9:82:DE:94:B9:5E:4D:56:BA:5D:90:7F:52:24:C2:9B:95:4B:18:B5:F0:0B:24",
+      "DA:7C:89:87:22:D3:41:32:65:6E:46:41:92:2A:C5:76:6B:9D:6D:BB:E3:88:E5:36:9C:10:CC:CE:10:A3:DD:22"
+
+    ]
+  }
+},
+{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.finance.walletwise.dev",
+    "sha256_cert_fingerprints":
+    [
+        "3F:F8:47:EB:37:25:EA:10:B7:D9:82:DE:94:B9:5E:4D:56:BA:5D:90:7F:52:24:C2:9B:95:4B:18:B5:F0:0B:24",
+        "DA:7C:89:87:22:D3:41:32:65:6E:46:41:92:2A:C5:76:6B:9D:6D:BB:E3:88:E5:36:9C:10:CC:CE:10:A3:DD:22"
+    ]
+  }
+}]
+
 ```
+
+
 
 Upload the assetlinks.json file to your website. 
 It must be accessible via https://yourdomain/.well-known/assetlinks.json.
