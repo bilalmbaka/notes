@@ -102,3 +102,6 @@ Then in the root module.
 })
 export class AppModule {}
 ```
+
+### Creating new record.
+

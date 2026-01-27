@@ -803,6 +803,7 @@ $DROP TYPE users_role_enum;
 Prettier
 
 1. in vscode install extension (Prettier-code formatter)
+https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
 2. in .vscode/settings.json
    {
    "editor.formatOnSave": true,
