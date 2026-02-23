@@ -75,14 +75,20 @@ CREATE TYPE role AS ENUM (
 
 ```sql
 ALTER TABLE users
-ADD COLUMN role role NOT NULL DEFAULT 'user';
+	ADD COLUMN role role NOT NULL DEFAULT 'user';
 ```
 
 ### Altering a table.
 
 ```sql
 ALTER TABLE users
-ALTER COLUMN updated_at SET DEFAULT now();
+	ALTER COLUMN updated_at SET DEFAULT now();
+```
+
+### Altering a table type to enum
+```sql
+ALTER TABLE users ALTER COLUMN gender
+	TYPE users_gender_enum USING gender::text::users_gender_enum;
 ```
 
 ### how to remove a default in an existing column.
