@@ -96,3 +96,8 @@ ALTER TABLE users ALTER COLUMN role DROP DEFAULT;
 ```sql
 ALTER TABLE users ALTER COLUMN role SET DEFAULT 'app_user';
 ```
+
+### updating a record in the table
+```sql
+UPDATE users SET disabled = true WHERE id = 3;
+```
