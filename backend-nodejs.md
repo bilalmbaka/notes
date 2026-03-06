@@ -10,11 +10,11 @@
 
 ### Tables
 - To list all tables
-```bash
+```sql
 \d
 ```
 - To see the schema of a given table
-```bash
+```sql
 \d <table_name>
 ```
 
@@ -22,6 +22,17 @@
 ```sql
 ALTER TABLE users
 	ADD COLUMN role role NOT NULL DEFAULT 'user';
+```
+
+- Inserting a new record into the table
+```sql
+INSERT INTO recyclables (name, icon, price, weight_classification) 
+VALUES (
+  'aluminium', 
+  'https://res.cloudinary.com/dxv10krxo/image/upload/v1772807670/aluminium_k3msbg.png', 
+  1000, 
+  'kg'
+);
 ```
 
 ### Relations
