@@ -21,16 +21,16 @@ tsc hello.ts
 __Then edit the generated tscconfig.json__
 1. set rootDir and outDir
 2. Add these
-   "expreimentalDecorations": true,
-   "emitDecoratorMetadata": true,
-   "esModuleInterop": true,
-   "strictNullChecks": true,
-   "forceConsistenCasingInFileNames": true,
-   "verbetimModuleSyntax": false,
-   "moduleResolution": "nodenext",
-   "noUnusedLocals": true,
-   "noUnusedParameters": true,
-   "strict": false
+   "expreimentalDecorations": true, <br/>
+   "emitDecoratorMetadata": true, <br/>
+   "esModuleInterop": true, <br/>
+   "strictNullChecks": true, <br/>
+   "forceConsistenCasingInFileNames": true, <br/>
+   "verbetimModuleSyntax": false, <br/>
+   "moduleResolution": "nodenext", <br/>
+   "noUnusedLocals": true, <br/>
+   "noUnusedParameters": true, <br/>
+   "strict": false <br/>
 
 ### Set up nodemon
 ```bash
