@@ -18,6 +18,12 @@
 \d <table_name>
 ```
 
+- Adding a new column to a table.
+```sql
+ALTER TABLE users
+	ADD COLUMN role role NOT NULL DEFAULT 'user';
+```
+
 ### Relations
 
 #### Many-to-Many
