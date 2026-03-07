@@ -35,14 +35,17 @@
 
 ### sources
 
-- [Foregrond service types](https://developer.android.com/develop/background-work/services/fgs/service-types)
-- [Forground services documentation](https://developer.android.com/develop/background-work/services/fgs/declare)
-
-## Android concepts
+- [Android Foregrond service types](https://developer.android.com/develop/background-work/services/fgs/service-types)
+- [Android Forground services documentation](https://developer.android.com/develop/background-work/services/fgs/declare)
+- [Google play policy](https://support.google.com/googleplay/android-developer/answer/16559646?visit_id=639084449983000071-1289019074&rd=2)
+- [Android Restrictions on starting a foreground service from background](https://developer.android.com/develop/background-work/services/fgs/launch)
 
 ## Foreground Services
 
-### Forground service types
+
+### Android
+
+#### Forground service types
 
 Beginning with Android 14 (API level 34), you must declare an appropriate service type 
 for each foreground service. That means you must declare the service type in your app manifest, 
