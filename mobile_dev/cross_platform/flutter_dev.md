@@ -1,8 +1,9 @@
 # Table of Contents
 
+1. [Practise questions](#PRACTISE_QUESTIONS)
 1. [Running functions in background/foreground](#RUNNING_FUNCTIONS_IN_BACKGROUND/FOREGROUND)
 2. [Flavoring](#FLAVORING)
-3. [Code push](#code_push)
+3. [Code push](#CODE_PUSH)
 4. [Testing](#testing)
 
 
@@ -10,6 +11,24 @@
 
 <br/>
 <br/>
+<br/>
+
+# PRATISE QUESTIONS
+1. Create a foregroud service to handle live location updates,
+    it should run infinitely.
+2. Create a background service to handle live location updates,
+    it should run infinitely.
+3. Create a foreground service to handle live download and show progress.
+4. Create a backgroudn service to handle data upload.
+
+
+
+
+<br/>
+<br/>
+<br/>
+
+
 # CHAPTER 1
 
 # RUNNING FUNCTIONS IN BACKGROUND/FOREGROUND
@@ -25,7 +44,10 @@
 
 ### Forground service types
 
-Beginning with Android 14 (API level 34), you must declare an appropriate service type for each foreground service. That means you must declare the service type in your app manifest, and also request the appropriate foreground service permission for that type (in addition to requesting the FOREGROUND_SERVICE permission).
+Beginning with Android 14 (API level 34), you must declare an appropriate service type 
+for each foreground service. That means you must declare the service type in your app manifest, 
+and also request the appropriate foreground service permission for that type 
+(in addition to requesting the FOREGROUND_SERVICE permission).
 
 [Foregrond service types](https://developer.android.com/develop/background-work/services/fgs/service-types)
 
@@ -58,6 +80,12 @@ Beginning with Android 14 (API level 34), you must declare an appropriate servic
     </application>
 </manifest>
 ```
+
+
+
+<br/>
+<br/>
+<br/>
 
 # CHAPTER 2
 
