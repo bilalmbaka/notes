@@ -1,3 +1,9 @@
+# Table of contents
+1. (Running functions in background/foreground)[#RUNNING FUNCTIONS IN BACKGROUND/FOREGROUND]
+
+
+
+
 # CHAPTER 1
 
 # RUNNING FUNCTIONS IN BACKGROUND/FOREGROUND
