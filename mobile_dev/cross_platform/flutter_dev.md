@@ -1,15 +1,15 @@
 # Table of Contents
 
 1. [Running functions in background/foreground](#RUNNING_FUNCTIONS_IN_BACKGROUND/FOREGROUND)
+2. [Flavoring](#FLAVORING)
+3. [Code push](#code_push)
+4. [Testing](#testing)
+
+
+
 
 <br/>
 <br/>
-## PostgreSQL
-
-
-
-
-
 # CHAPTER 1
 
 # RUNNING FUNCTIONS IN BACKGROUND/FOREGROUND
