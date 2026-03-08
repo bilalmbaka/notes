@@ -1,8 +1,7 @@
 # Table of Contents
 
-1. [PostgreSQL](#postgresql)
-   * [Tables](#tables)
-   * [Relations](#relations)
+* [Package management](#package)
+* [PostgreSQL](#postgresql)
   
 
 
