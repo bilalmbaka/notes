@@ -3,7 +3,47 @@
 1. [PostgreSQL](#postgresql)
    * [Tables](#tables)
    * [Relations](#relations)
+  
 
+
+
+
+<br/>
+<br/>
+<br/>
+<br/>
+## Package
+
+Importing a local package / project in another project. <br/>
+In project a create an index.ts that will export all the required files for the importing
+package so see them.
+
+* add this to package.json
+```json
+{
+  "name": "auth-lib",
+  "version": "1.0.0",
+  "main": "dist/index.js", //The entry point JavaScript file of the package, When someone imports auth-lib, Node loads this file.
+  "types": "dist/index.d.ts" //The TypeScript type definitions entry point, allows TypeScript projects to get types and autocompletion.
+}
+```
+
+* add the project to the importing project.
+```bash
+npm install ../path-to-auth-project
+```
+
+which produces.
+```json
+"auth-lib": "file:../yirapay-shared-resources"
+```
+
+
+
+
+
+<br/>
+<br/>
 <br/>
 <br/>
 ## PostgreSQL
