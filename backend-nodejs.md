@@ -11,7 +11,9 @@
 <br/>
 <br/>
 <br/>
-## Package
+
+#
+# Package
 
 Importing a local package / project in another project. <br/>
 In project a create an index.ts that will export all the required files for the importing
@@ -45,7 +47,9 @@ which produces.
 <br/>
 <br/>
 <br/>
-## PostgreSQL
+
+#
+# PostgreSQL
 
 ### Tables
 - To list all tables
