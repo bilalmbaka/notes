@@ -394,6 +394,138 @@ __going back__
 navigateUp = { navController.navigateUp() }
 ```
 
+
+---
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+---
+# Handling user input
+---
+
+```kotlin
+TextField(
+    state = rememberTextFieldState(initialText = "Hello"),
+    label = { Text("Label") }
+)
+
+OutlinedTextField(
+    state = rememberTextFieldState(),
+    label = { Text("Label") }
+)
+
+BasicTextField()
+```
+
+### styling text field
+
+```kotlin
+TextField(
+    state = rememberTextFieldState("Hello\nWorld\nInvisible"),
+    lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = 2),
+    placeholder = { Text("") },
+    textStyle = TextStyle(color = Color.Blue, fontWeight = FontWeight.Bold),
+    label = { Text("Enter text") },
+    modifier = Modifier.padding(20.dp)
+)
+```
+
+__give entered text a gradient using brush api__
+
+```kotlin
+val brush = remember {
+    Brush.linearGradient(
+        colors = listOf(Color.Red, Color.Yellow, Color.Green, Color.Blue, Color.Magenta)
+    )
+}
+TextField(
+    state = rememberTextFieldState(), textStyle = TextStyle(brush = brush)
+)
+```
+
+### Manage text field state
+
+TextField uses a dedicated state holder class called TextFieldState for its content 
+and selection. TextFieldState is designed to be hoisted wherever it fits in your 
+architecture. 
+
+There are 2 main properties that are provided by TextFieldState:
+
+1. initialText: Contents of the TextField.
+2. initialSelection: Indicates where the cursor or the selection is.
+
+What differentiates TextFieldState from other approaches, like the onValueChange callback, 
+is that TextFieldState fully encapsulates the entire input flow. This includes using 
+the correct backing data structures, inlining filters and formatters, and also synchronizing 
+all edits coming from different sources.
+
+```kotlin
+val usernameState = rememberTextFieldState()
+TextField(
+    state = usernameState,
+    lineLimits = TextFieldLineLimits.SingleLine,
+    placeholder = { Text("Enter Username") }
+)
+```
+
+### Modifiying user input.
+
+You can filter user input with input transformations.
+
+```kotlin
+TextField(
+    state = rememberTextFieldState(),
+    lineLimits = TextFieldLineLimits.SingleLine,
+    inputTransformation = InputTransformation.maxLength(10)
+)
+```
+
+Custom input transformations
+
+```kotlin
+class DigitOnlyInputTransformation : InputTransformation {
+    override fun TextFieldBuffer.transformInput() {
+        if (!asCharSequence().isDigitsOnly()) {
+            revertAllChanges()
+        }
+    }
+}
+```
+
+You can chain input transformations
+
+```kotlin
+TextField(
+    state = rememberTextFieldState(),
+    inputTransformation = InputTransformation.maxLength(6)
+        .then(CustomInputTransformation()),
+)
+```
+
+Format input before it's displayed
+
+```kotlin
+class PhoneNumberOutputTransformation : OutputTransformation {
+    override fun TextFieldBuffer.transformOutput() {
+        if (length > 0) insert(0, "(")
+        if (length > 4) insert(4, ")")
+        if (length > 8) insert(8, "-")
+    }
+}
+
+TextField(
+    state = rememberTextFieldState(),
+    outputTransformation = PhoneNumberOutputTransformation()
+)
+```
+
+
+
+---
+
 <br/>
 <br/>
 <br/>
@@ -415,43 +547,6 @@ Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     )
-```
-
-### \* input form fields
-
-## _Outlined_
-
-```Kotlin
-@Composable
-fun formField() {
-    OutlinedTextField(
-                value = userGuess,
-                singleLine = true,
-                shape = shapes.large,
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = colorScheme.surface,
-                    unfocusedContainerColor = colorScheme.surface,
-                    disabledContainerColor = colorScheme.surface,
-                ),
-                onValueChange = onUserGuessChanged,
-                label = {
-                    if (isGuessWrong) {
-                        Text(stringResource(R.string.wrong_guess))
-                    } else {
-                        Text(stringResource(R.string.enter_your_word))
-                    }
-                },
-                isError = isGuessWrong,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = { onKeyboardDone() }
-                )
-            )
-
-}
 ```
 
 
