@@ -1,12 +1,12 @@
-Practise questions
+# Practise questions
 
 1. how do you access string resources.
 2. create a login screen.
 
 ---
 
-Section 1
-Kotlin
+# Section 1
+# Kotlin
 
 ---
 
@@ -17,23 +17,28 @@ It lets you write small blocks of code that you can pass around as a value.
 
 General syntax:
 
+```kotlin
 val lambdaName: (Int, Int) -> Int = { a, b -> a + b }
 
 (Int, Int) -> Int means: it takes two Ints, returns an Int.
 
 { a, b -> a + b } is the lambda (parameters on the left of ->, body on the right).
+```
 
-## Example 2
+## Example
 
+```kotlin
 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 Greeting(
 name = "Android",
 modifier = Modifier.padding(innerPadding)
 )
 }
+```
 
 This is the function definition for a scaffold
 
+```kotlin
 @Composable
 fun Scaffold(
 modifier: Modifier = Modifier,
@@ -45,6 +50,7 @@ content: @Composable (PaddingValues) -> Unit
 // ...implementation...
 }
 
+
 // Explicit
 Scaffold(modifier = Modifier.fillMaxSize(), content = { innerPadding ->
 Greeting(name = "Android", modifier = Modifier.padding(innerPadding))
@@ -54,21 +60,25 @@ Greeting(name = "Android", modifier = Modifier.padding(innerPadding))
 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 Greeting(name = "Android", modifier = Modifier.padding(innerPadding))
 }
+```
 
 Traling lambda means that if the last parameter of a function is a lambda,
 then you can write the lambda outside the parentheses.
 
+<br/>
+<br/>
+<br/>
+
 ---
 
-SECTION 2
-Jetpack compose
+# SECTION 2
+# Jetpack compose
 
 ---
 
-## CHAPTER 1
+# INRODUCITON
 
-## INRODUCITON
-
+```
 class MainActivity : ComponentActivity() {
 override fun onCreate(savedInstanceState: Bundle?) {
 super.onCreate(savedInstanceState)
@@ -85,6 +95,7 @@ modifier = Modifier.padding(innerPadding)
 }
 }
 }
+```
 
 1. class MainActivity : ComponentActivity()
 
@@ -109,9 +120,13 @@ A. Instead of setContentView(R.layout.something) (XML), Compose apps use setCont
 B. Inside, you write composable functions (UI in Kotlin code).
 C. AdsAppTheme is probably your custom Material 3 theme wrapper, giving colors, typography, and shapes.
 
-# Chapter 2
+
+<br/>
+<br/>
+<br/>
 
 # Activity lifecycle
+
 
 ### sources
 
@@ -223,9 +238,14 @@ you must use **_rememberSaveable_**
     }
 ```
 
-# Chapter 3
 
+<br/>
+<br/>
+<br/>
+
+---
 # Themeing
+---
 
 ### setting border radius of buttons globally.
 
@@ -257,11 +277,14 @@ So if you want all your buttons to have, say,
 12dp rounded corners, set large = RoundedCornerShape(12.dp)
 in your theme.<br/><br/><br/><br/>
 
+
+<br/>
+<br/>
+<br/>
+
 ---
-
-# Chapter 4
-
 # App architecture
+---
 
 - [Android developers](https://developer.android.com/topic/architecture#recommended-app-arch)
 
@@ -310,12 +333,75 @@ class Name: ViewModel() {
 }
 ```
 
+
+
+<br/>
+<br/>
+<br/>
+
+---
+# NAVIGATION
+---
+
+__LocalContext.current__ , Context  is an abstract class whose implementation 
+is provided by the Android system. It allows access to application-specific 
+resources and classes, as well as up-calls for application-level operations 
+such as launching activities, etc. You can use this variable to get the 
+strings from the list of resource IDs in the view model to display the list 
+of flavors.
+
+To navigate to another route, simply call the navigate() method on your instance 
+of NavHostController.
+
+```kotlin
+navController.navigate(route)
+```
+
+__Pop to the start screen__
+
+```kotlin
+navController.popBackStack(route,inclusive)
+```
+
+The popBackStack() method has two required parameters.
+
+1. route: The string representing the route of the destination 
+    you want to navigate back to.
+2. inclusive: A Boolean value that, if true, also pops (removes) the specified route. 
+    If false, popBackStack() will remove all destinations on top of—but not 
+    including—the start destination, leaving it as the topmost screen visible to the user.
+    
+__Getting the current screen__
+
+```kotlin
+val backStackEntry by navController.currentBackStackEntryAsState()
+backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
+
+val currentScreen = CupcakeScreen.valueOf(
+    backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
+)
+```
+
+__checking if route can be popped__
+
+```kotlin
+canNavigateBack = navController.previousBackStackEntry != null,
+```
+
+__going back__
+
+```kotlin
+navigateUp = { navController.navigateUp() }
+```
+
 <br/>
 <br/>
 <br/>
 <br/>
 
+---
 # Miscellaneaous
+---
 
 ### \* Making Composable widget scrollable
 
@@ -369,60 +455,5 @@ fun formField() {
 ```
 
 
-<br/>
-<br/>
-<br/>
-# CHAPTER 5
-# NAVIGATION
 
-__LocalContext.current__ , Context  is an abstract class whose implementation 
-is provided by the Android system. It allows access to application-specific 
-resources and classes, as well as up-calls for application-level operations 
-such as launching activities, etc. You can use this variable to get the 
-strings from the list of resource IDs in the view model to display the list 
-of flavors.
-
-To navigate to another route, simply call the navigate() method on your instance 
-of NavHostController.
-
-```kotlin
-navController.navigate(route)
-```
-
-__Pop to the start screen__
-
-```kotlin
-navController.popBackStack(route,inclusive)
-```
-
-The popBackStack() method has two required parameters.
-
-1. route: The string representing the route of the destination 
-    you want to navigate back to.
-2. inclusive: A Boolean value that, if true, also pops (removes) the specified route. 
-    If false, popBackStack() will remove all destinations on top of—but not 
-    including—the start destination, leaving it as the topmost screen visible to the user.
-    
-__Getting the current screen__
-
-```kotlin
-val backStackEntry by navController.currentBackStackEntryAsState()
-backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
-
-val currentScreen = CupcakeScreen.valueOf(
-    backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
-)
-```
-
-__checking if route can be popped__
-
-```kotlin
-canNavigateBack = navController.previousBackStackEntry != null,
-```
-
-__going back__
-
-```kotlin
-navigateUp = { navController.navigateUp() }
-```
 
