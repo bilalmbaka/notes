@@ -1,10 +1,11 @@
 # Table of Contents
 
-1. [Practise questions](#PRACTISE_QUESTIONS)
-1. [Running functions in background/foreground](#RUNNING_FUNCTIONS_IN_BACKGROUND/FOREGROUND)
-2. [Flavoring](#FLAVORING)
-3. [Code push](#CODE_PUSH)
-4. [Testing](#testing)
+* [Practise questions](#PRACTISE_QUESTIONS)
+* [Running functions in background/foreground](#RUNNING_FUNCTIONS_IN_BACKGROUND/FOREGROUND)
+* [Flavoring](#FLAVORING)
+* [Code push](#CODE_PUSH)
+* [Testing](#testing)
+* [Interacting with native code](#native)
 
 
 
@@ -647,8 +648,26 @@ __Method A__
 
 
 
+#
+<br/>
+<br/>
+<br/>
 
+# NATIVE
 
+## Platform channels.
+
+### Sources
+[Flutter documentation](https://docs.flutter.dev/platform-integration/platform-channels)
+
+Messages and responses are passed asynchronously through channels to ensure the user 
+interface remains responsive. On the client side, MethodChannel for Flutter enables 
+sending messages that correspond to method calls. On the platform side, 
+MethodChannel for Android and FlutterMethodChannel for iOS enable receiving method 
+calls and sending back a result.
+
+### Example
+An app to read battery level.
 
 
 
