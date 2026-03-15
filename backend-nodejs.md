@@ -2,10 +2,17 @@
 
 * [Package management](#package)
 * [PostgreSQL](#postgresql)
-  
+  - [Tables](#tables)
+  - [Relations](#relations)
+  - [Location](#location-types)
+* [Typeorm](#typeorm)
+  - [Handling location](#location-types)
 
 
 
+
+
+#
 
 <br/>
 <br/>
@@ -13,7 +20,7 @@
 <br/>
 
 #
-# Package
+# PACAKGES
 
 Importing a local package / project in another project. <br/>
 In project a create an index.ts that will export all the required files for the importing
@@ -42,6 +49,7 @@ which produces.
 
 
 
+#
 
 <br/>
 <br/>
@@ -49,9 +57,9 @@ which produces.
 <br/>
 
 #
-# PostgreSQL
+# POSTGRESQL
 
-### Tables
+## TABLES
 - To list all tables
 ```sql
 \d
@@ -78,7 +86,111 @@ VALUES (
 );
 ```
 
-### Relations
+## RELATIONS
+
+#### One-to-One
+One-to-one is a relation where A contains only one 
+instance of B, and B contains only one instance of A.
+
+__Example__
+
+```ts
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+
+@Entity()
+export class Profile {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    gender: string
+
+    @Column()
+    photo: string
+}
+
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToOne,
+    JoinColumn,
+} from "typeorm"
+import { Profile } from "./Profile"
+
+@Entity()
+export class User {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    name: string
+
+    @OneToOne(() => Profile)
+    @JoinColumn()
+    profile: Profile
+}
+```
+
+Here we added @OneToOne to the user and specified the 
+target relation type to be Profile. We also added @JoinColumn 
+which is required and must be set only on one side of the relation. 
+The side you set @JoinColumn on, that side's table will contain a 
+"relation id" and foreign keys to the target entity table.
+
+Relations can be uni-directional and bi-directional. 
+Uni-directional are relations with a relation decorator only on one side. Bi-directional are relations with decorators on both sides of a relation.
+
+
+```ts
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from "typeorm"
+import { User } from "./User"
+
+@Entity()
+export class Profile {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    gender: string
+
+    @Column()
+    photo: string
+
+    @OneToOne(() => User, (user) => user.profile) // specify inverse side as a second parameter
+    user: User
+}
+
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    OneToOne,
+    JoinColumn,
+} from "typeorm"
+import { Profile } from "./Profile"
+
+@Entity()
+export class User {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    name: string
+
+    @OneToOne(() => Profile, (profile) => profile.user) // specify inverse side as a second parameter
+    @JoinColumn()
+    profile: Profile
+}
+```
+
+We just made our relation bi-directional. Note, 
+inverse relation does not have a @JoinColumn. 
+@JoinColumn must only be on one side of the relation 
+- on the table that will own the foreign key.
+
+
+
 
 #### Many-to-Many
 Many-to-many is a relation where A contains multiple instances of B, 
@@ -86,4 +198,97 @@ and B contains multiple instances of A.
 
 @JoinTable() is required for @ManyToMany relations. You must put 
 @JoinTable on one (owning) side of relation.
+
+
+## LOCATION TYPES
+
+You don't store "Lat" and "Lng" as two separate numbers. 
+Instead, you store them in a single column of type GEOGRAPHY(Point, 4326).
+
+```sql
+CREATE EXTENSION IF NOT EXISTS postgis;
+```
+
+```sql
+ALTER TABLE users 
+ADD COLUMN location GEOGRAPHY(Point, 4326);
+```
+__NOTE__: 4326 is the standard spatial ID (SRID) for GPS coordinates (WGS 84).
+
+__Inserting data__
+
+When saving a user's location, you use a helper function. 
+Crucial: PostGIS uses (Longitude, Latitude) order.
+
+```sql
+UPDATE users 
+SET location = ST_SetSRID(ST_MakePoint(6.3350, 5.6013), 4326) 
+WHERE id = 'user_123';
+```
+
+__The "Find Users within 2km" Query__
+
+```sql
+SELECT id, name, ST_Distance(location, 'SRID=4326;POINT(6.339 5.608)'::geography) as distance_meters
+FROM users
+WHERE ST_DWithin(
+    location, 
+    'SRID=4326;POINT(6.339 5.608)'::geography, 
+    2000 -- Distance in meters (2km)
+);
+```
+
+__Indexing for Speed__
+
+```sql
+CREATE INDEX users_location_idx ON users USING GIST (location);
+```
+
+
+
+
+#
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+#
+# TYPEORM
+
+## HANDING LOCATION DATA USING POSTGRES.
+
+__The column__
+
+```ts
+ @Column({
+        type: 'geography',
+        spatialFeatureType: 'Point',
+        srid: 4326,
+        nullable: true,
+    })
+    currentLocation: Point;
+```
+__Update the column__
+
+```ts
+var currentLocation:| undefined| {lat: number;lng: number;};
+
+await this.userRepository.save({
+                    id: user.id,
+                    userName: dto.userName,
+                    profilePicture: picture,
+                    currentLocation: {
+                        type: 'Point',
+                        coordinates: [currentLocation?.lng, currentLocation?.lat],
+                    },
+                    currentAddress: address,
+                } as UserEntity,
+                {
+                    listeners: dto.currentLocation ? true : false,
+                },
+  );
+```
+
 

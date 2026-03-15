@@ -6,6 +6,7 @@
 * [Code push](#CODE_PUSH)
 * [Testing](#testing)
 * [Interacting with native code](#native)
+  - [Platform Channels](#platform-channels)
 
 
 
@@ -668,6 +669,11 @@ calls and sending back a result.
 
 ### Example
 An app to read battery level.
+
+__Android__
+
+
+
 
 
 

@@ -523,6 +523,28 @@ TextField(
 ```
 
 
+--
+
+<br/>
+<br/>
+<br/>
+
+---
+# UNDERSTANING ANDROID SETTINGS
+
+## settings.gradle.
+
+__pluginManagement__ Defines where to find the plugins themselves.
+__plugins__ Declares which plugins to use.
+__dependencyResolutionManagement__ Defines where the app's code should 
+look for libraries (like JitPack).
+
+
+
+
+
+
+
 
 ---
 
