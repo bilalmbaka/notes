@@ -7,6 +7,8 @@
 * [Testing](#testing)
 * [Interacting with native code](#native)
   - [Platform Channels](#platform-channels)
+* [App Distribution](#pp-distribution)
+  - [Distribution to IOS](#ios-distibution)
 
 
 
@@ -675,6 +677,31 @@ __Android__
 
 
 
+
+
+
+#
+<br>
+<br>
+<br>
+
+# App distribution.
+
+## IOS
+
+### Create a new certificate.
+
+1. Launch Keychain Access located in /Applications/Utilities.
+
+2. Choose Keychain Access > Certificate Assistant > Request a Certificate from a Certificate Authority.
+
+3. In the Certificate Assistant dialog, enter an email address in the User Email Address field.
+
+4. In the Common Name field, enter a name for the key (for example, Gita Kumar Dev Key).
+
+5. Leave the CA Email Address field empty.
+
+6. Choose “Saved to disk,” then click Continue.
 
 
 

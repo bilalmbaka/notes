@@ -7,8 +7,10 @@
   - [Location](#location-types)
 * [Typeorm](#typeorm)
   - [Handling location](#location-types)
-
-
+* [Deployment](#deployment)
+  - [Render](#render)
+* [Push notifications](#push-notifications)
+  - [Firebase](#firebase)
 
 
 
@@ -292,3 +294,60 @@ await this.userRepository.save({
 ```
 
 
+#
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+# 
+# Deployment
+
+## Render
+
+package.json
+
+```json
+    "build": "tsc",
+    "start": "node dist/index.js"
+```
+
+Then add this settings in render settings.
+
+
+
+#
+
+<br/>
+<br/>
+<br/>
+<br/>
+
+#
+# Push notifications
+
+## Firebase
+
+### Setup the enviroment
+
+Generate a private key file in JSON format, 
+
+1. In the Firebase console, open Settings > Service Accounts.
+2. Click Generate New Private Key, then confirm by clicking Generate Key.
+3. Securely store the JSON file containing the key.
+
+```bash
+npm install firebase-admin
+```
+
+```bash
+admin.initializeApp({
+    credential: admin.credential.cert({
+        projectId: this.configService.get('FIREBASE_PROJECT_ID'),
+        privateKey: this.configService.get('FIREBASE_PRIVATE_KEY')
+            ?.replace(/\\n/g, '\n'), // convert escaped \n to real newlines
+        clientEmail: this.configService.get('FIREBASE_CLIENT_EMAIL'),
+    })
+});
+```
