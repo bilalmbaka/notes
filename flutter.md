@@ -9,6 +9,8 @@
   - [Platform Channels](#platform-channels)
 * [App Distribution](#pp-distribution)
   - [Distribution to IOS](#ios-distibution)
+* [Naviation](#navigation)
+  - [Nested Navigation](#nested-navigation)
 
 
 
@@ -702,6 +704,26 @@ __Android__
 5. Leave the CA Email Address field empty.
 
 6. Choose “Saved to disk,” then click Continue.
+
+
+
+
+
+
+
+
+
+#
+<br>
+<br>
+<br>
+
+# NAVIGATION
+
+## Nested navigation
+
+### GoRouter
+
 
 
 
