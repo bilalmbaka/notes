@@ -2,6 +2,7 @@
 
 * [Package management](#package)
 * [PostgreSQL](#postgresql)
+  - [Database](#databases)
   - [Tables](#tables)
   - [Relations](#relations)
   - [Location](#location-types)
@@ -61,6 +62,18 @@ which produces.
 #
 # POSTGRESQL
 
+## Databases
+- To list all database
+```sql
+\l
+\l+
+```
+
+- To select a database
+```sql
+\c <database name>
+```
+
 ## TABLES
 - To list all tables
 ```sql
@@ -86,6 +99,16 @@ VALUES (
   1000, 
   'kg'
 );
+```
+
+- Delete a record from a table.
+```sql
+DELETE FROM users WHERE id = 8;
+```
+
+- Update a record in a table.
+```
+UPDATE users SET wallet_balance = 1000000 WHERE account_type = 'agent';
 ```
 
 ## RELATIONS
@@ -141,7 +164,8 @@ The side you set @JoinColumn on, that side's table will contain a
 "relation id" and foreign keys to the target entity table.
 
 Relations can be uni-directional and bi-directional. 
-Uni-directional are relations with a relation decorator only on one side. Bi-directional are relations with decorators on both sides of a relation.
+Uni-directional are relations with a relation decorator only on one side. 
+Bi-directional are relations with decorators on both sides of a relation.
 
 
 ```ts
@@ -192,6 +216,111 @@ inverse relation does not have a @JoinColumn.
 - on the table that will own the foreign key.
 
 
+#### Many-to-one / one-to-many relations
+Many-to-one / one-to-many is a relation where A contains 
+multiple instances of B, but B contains only one instance of A.
+
+Let's take for example User and Photo entities. User can have 
+multiple photos, but each photo is owned by only one single user.
+
+
+```ts
+@Entity()
+export class User {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    name: string
+
+    @OneToMany(() => Photo, (photo) => photo.user)
+    photos: Photo[]
+}
+```
+
+```ts
+@Entity()
+export class Photo {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column()
+    url: string
+
+    @ManyToOne(() => User, (user) => user.photos)
+    user: User
+}
+```
+
+Here we added @OneToMany to the photos property and specified 
+the target relation type to be Photo. You can omit @JoinColumn 
+in a @ManyToOne / @OneToMany relation. @OneToMany cannot exist 
+without @ManyToOne. If you want to use @OneToMany, @ManyToOne 
+is required. However, the inverse is not required: If you only 
+care about the @ManyToOne relationship, you can define it without 
+having @OneToMany on the related entity. Where you set 
+@ManyToOne - its related entity will have "relation id" and foreign key.
+
+__How to save such a relation__
+```ts
+const photo1 = new Photo()
+photo1.url = "me.jpg"
+await dataSource.manager.save(photo1)
+
+const photo2 = new Photo()
+photo2.url = "me-and-bears.jpg"
+await dataSource.manager.save(photo2)
+
+const user = new User()
+user.name = "John"
+user.photos = [photo1, photo2]
+await dataSource.manager.save(user)
+
+//or
+const user = new User()
+user.name = "Leo"
+await dataSource.manager.save(user)
+
+const photo1 = new Photo()
+photo1.url = "me.jpg"
+photo1.user = user
+await dataSource.manager.save(photo1)
+
+const photo2 = new Photo()
+photo2.url = "me-and-bears.jpg"
+photo2.user = user
+await dataSource.manager.save(photo2)
+
+//reading the data.
+const userRepository = dataSource.getRepository(User)
+const users = await userRepository.find({
+    relations: {
+        photos: true,
+    },
+})
+
+// or from inverse side
+const photoRepository = dataSource.getRepository(Photo)
+const photos = await photoRepository.find({
+    relations: {
+        user: true,
+    },
+})
+
+//or using query builder
+const users = await dataSource
+    .getRepository(User)
+    .createQueryBuilder("user")
+    .leftJoinAndSelect("user.photos", "photo")
+    .getMany()
+
+// or from inverse side
+const photos = await dataSource
+    .getRepository(Photo)
+    .createQueryBuilder("photo")
+    .leftJoinAndSelect("photo.user", "user")
+    .getMany()
+```
 
 
 #### Many-to-Many

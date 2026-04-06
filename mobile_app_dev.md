@@ -7,11 +7,8 @@
 * [Testing](#testing)
 * [Interacting with native code](#native)
   - [Platform Channels](#platform-channels)
-* [App Distribution](#pp-distribution)
+* [App Distribution](#app-distribution)
   - [Distribution to IOS](#ios-distibution)
-* [Naviation](#navigation)
-  - [Nested Navigation](#nested-navigation)
-
 
 
 
@@ -21,11 +18,8 @@
 
 # PRATISE QUESTIONS
 1. Create a foregroud service to handle live location updates,
-    it should run infinitely.
-2. Create a background service to handle live location updates,
-    it should run infinitely.
-3. Create a foreground service to handle live download and show progress.
-4. Create a backgroudn service to handle data upload.
+    it should run infinitely in flutter.
+2. Create a foreground service to handle live download and show progress in flutter.
 
 
 
@@ -39,17 +33,19 @@
 
 # RUNNING FUNCTIONS IN BACKGROUND/FOREGROUND
 
+## Foreground Services
+
+
+### Android
+
 ### sources
 
 - [Android Foregrond service types](https://developer.android.com/develop/background-work/services/fgs/service-types)
 - [Android Forground services documentation](https://developer.android.com/develop/background-work/services/fgs/declare)
 - [Google play policy](https://support.google.com/googleplay/android-developer/answer/16559646?visit_id=639084449983000071-1289019074&rd=2)
 - [Android Restrictions on starting a foreground service from background](https://developer.android.com/develop/background-work/services/fgs/launch)
+- [Android Foreground service types](https://developer.android.com/develop/background-work/services/fgs/service-types)
 
-## Foreground Services
-
-
-### Android
 
 #### Forground service types
 
@@ -706,23 +702,6 @@ __Android__
 6. Choose “Saved to disk,” then click Continue.
 
 
-
-
-
-
-
-
-
-#
-<br>
-<br>
-<br>
-
-# NAVIGATION
-
-## Nested navigation
-
-### GoRouter
 
 
 
