@@ -9,6 +9,10 @@
   - [Platform Channels](#platform-channels)
 * [App Distribution](#app-distribution)
   - [Distribution to IOS](#ios-distibution)
+* [Device management](#device-management)
+  - [Getting back space in macbook](#getting-back-space-in-macbook)
+* [Quick actions](#quick-actions)
+* [Voice actions](#voice-actions)
 
 
 
@@ -28,8 +32,9 @@
 <br/>
 <br/>
 
+# 
 
-# CHAPTER 1
+# SECTION
 
 # RUNNING FUNCTIONS IN BACKGROUND/FOREGROUND
 
@@ -92,7 +97,7 @@ and also request the appropriate foreground service permission for that type
 <br/>
 <br/>
 
-# CHAPTER 2
+# SECTION
 
 # FLAVORING
 
@@ -104,7 +109,14 @@ If you want to create Flutter flavors for an iOS app, you'll need to do so in Xc
 open ios/Runner.xcworkspace
 ```
 
-# CHAPTER 3
+
+<br/>
+<br/>
+<br/>
+
+#
+
+# SECTION
 
 # CODE PUSH
 
@@ -208,7 +220,18 @@ Building with shorebird release will include Shorebird code push in your app. Bu
 
 You can remove shorebird from your path by removing it from your .bashrc or .zshrc and deleting the .shorebird directory located in ~/.shorebird.
 
-# CHAPTER 4
+
+
+
+
+
+<br/>
+<br/>
+<br/>
+
+#
+
+# SECTION
 
 # TESTING
 
@@ -300,14 +323,20 @@ It is pretty much the same as widget testing you just add
 
 ```dart
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-````
+```
 
 to the start of main function.
 
 
 
 
-# CHAPTER 5
+
+
+<br/>
+<br/>
+<br/>
+
+#
 
 # CI/CD
 
@@ -387,8 +416,7 @@ environment:
 
 These will use the default keys.
 
-```gradle
-...
+```kotlin
   android {
 
       ...
@@ -465,24 +493,6 @@ scripts:
       EOF
 ```
 
-### IOS APPS
-
-<br>
-<br>
-
-### PUBLISHING
-
-### ANDROID
-
-<br><br>
-
-
-
-
-<br>
-<br>
-<br>
-
 ## Using github actions and fastlane.
 
 __sources__
@@ -537,7 +547,15 @@ i. Firebase app distribution
 
 
 
-# Chapter 6
+
+
+<br/>
+<br/>
+<br/>
+
+#
+
+# SECTION
 
 # PUBLISHING APPS
 
@@ -630,7 +648,7 @@ android {
 }
 ```
 
-## Appstore
+### Appstore
 
 ```bash
 flutter build ipa
@@ -646,6 +664,19 @@ __Method A__
 
 *Xcode will create a directory containing an IPA of your app and an ExportOptions.plist file. You can create new IPAs with the same options without launching Xcode by running flutter build ipa --export-options-plist=path/to/ExportOptions.plist*
 
+### Create a new certificate.
+
+1. Launch Keychain Access located in /Applications/Utilities.
+
+2. Choose Keychain Access > Certificate Assistant > Request a Certificate from a Certificate Authority.
+
+3. In the Certificate Assistant dialog, enter an email address in the User Email Address field.
+
+4. In the Common Name field, enter a name for the key (for example, Gita Kumar Dev Key).
+
+5. Leave the CA Email Address field empty.
+
+6. Choose “Saved to disk,” then click Continue.
 
 
 
@@ -654,6 +685,7 @@ __Method A__
 <br/>
 <br/>
 
+# SECTION
 # NATIVE
 
 ## Platform channels.
@@ -678,33 +710,96 @@ __Android__
 
 
 
+
 #
 <br>
 <br>
 <br>
 
-# App distribution.
+# SECTION
+# Device management
+## Getting back space in mackbook
 
-## IOS
+__Delete all ios emulators__
 
-### Create a new certificate.
+```bash
+xcrun simctl create default
+```
 
-1. Launch Keychain Access located in /Applications/Utilities.
+__Safe to delete the coresimulators folder__
+_~/Library/Developer/CoreSimulator_
 
-2. Choose Keychain Access > Certificate Assistant > Request a Certificate from a Certificate Authority.
+__Safe to delete all data in Archies and Dervice Data__
+_~/Library/Developer/Xcode/Archives_
+_~/Library/Developer/Xcode/DerivedData_
 
-3. In the Certificate Assistant dialog, enter an email address in the User Email Address field.
+__Check all runtimes installed in pc.__
+```bash
+xcrun simctl list runtimes
+```
 
-4. In the Common Name field, enter a name for the key (for example, Gita Kumar Dev Key).
-
-5. Leave the CA Email Address field empty.
-
-6. Choose “Saved to disk,” then click Continue.
-
-
+__They are stored in folder__
+_/Library/Developer/CoreSimulator/Profiles/Runtimes/_
 
 
 
+__Create a simulator__
+
+_Check device type list_
+```bash
+xcrun simctl list devicetypes
+```
+
+```bash
+xcrun simctl create "Development IPHONE" "iPhone 15" \
+iOS26.0
+```
+
+
+
+
+
+
+
+#
+<br>
+<br>
+<br>
+
+# SECTION
+# Quick actions
+
+### IOS
+__Sources__<br>
+[IOS offical documentation](#https://developer.apple.com/design/human-interface-guidelines/home-screen-quick-actions)
+[Developer documentation](#https://developer.apple.com/documentation/UIKit/add-home-screen-quick-actions)
+
+Each Home Screen quick action includes a title, an interface icon 
+on the left or right (depending on your app’s position on the 
+Home Screen), and an optional subtitle. The title and subtitle are 
+always left-aligned in left-to-right languages. Your app can even 
+dynamically update its quick actions when new information is available.
+
+
+Don’t use an emoji in place of a symbol or interface icon. Emojis are 
+full color, whereas quick action symbols are monochromatic and change
+appearance in Dark Mode to maintain contrast.
+
+
+[Flutter package](#https://pub.dev/packages?q=quick+actions)
+
+
+
+
+#
+<br>
+<br>
+<br>
+
+# Voice Actions
+
+### IOS
+[Sirikit](#https://developer.apple.com/documentation/sirikit/)
 
 
 
